@@ -18,6 +18,9 @@ public:
 	LexTokPair getTokenLexemePair();
 	// if file input is valid, returns lexeme-token pair
 
+	int findLexemeColumn(char);
+	// depending on what the character is, this function returns the corresponding column of the 2D array
+
 	bool isSeparator(char);
 	// if character is a separator, returns true
 	// this function also checks if the character is a part of the separator "<-"
@@ -28,10 +31,7 @@ public:
 	bool isKeyword(string);
 	// if the identifier string is a keyword, returns true
 
-	int findLexemeColumn(char);
-	// depending on what the character is, this function returns the corresponding column of the 2D array
 private:
 	ifstream inFile;
-	string token,
-		lexeme;
+	string machine; // digits/reals (dr) or identifiers (id) machine?
 };
