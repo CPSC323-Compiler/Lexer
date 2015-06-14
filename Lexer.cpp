@@ -11,14 +11,6 @@ Lexer::Lexer() {
 
 LexTokPair Lexer::getTokenLexemePair() {
 	// starting state: 1
-	// acceptance states: 2, 5
-	int DigitOrRealTable[5][2] = { { 2, 3 }, // row 1
-	{ 2, 4 }, // row 2
-	{ 3, 3 }, // row 3
-	{ 5, 3 }, // row 4
-	{ 5, 3 }, }; // row 5
-
-	// starting state: 1
 	// acceptance states: 2, 4
 	int IdentifierTable[5][2] = { { 2, 3 }, // row 1
 	{ 4, 5 }, // row 2
@@ -45,6 +37,14 @@ LexTokPair Lexer::getTokenLexemePair() {
 	while (inFile) {
 		// if first char of token is a digit, go to digit/real dfsm
 		if (isdigit(inFile.peek())) {
+			// starting state: 1
+			// acceptance states: 2, 5
+			int DigitOrRealTable[5][2] = { { 2, 3 }, // row 1
+			{ 2, 4 }, // row 2
+			{ 3, 3 }, // row 3
+			{ 5, 3 }, // row 4
+			{ 5, 3 }, }; // row 5
+
 			// set machine variable to digits/reals
 			machine = "dr";
 
