@@ -4,7 +4,10 @@
 using namespace std;
 
 int main() {
+	LexTokPair pair;
 	Lexer l;
 
-	l.getTokenLexemePair();
+	cout << "Token" << " " << "Lexeme" << endl;
+	pair = l.getTokenLexemePair();
+	cout << pair.token << " " << pair.lexeme << endl;
 }

@@ -12,9 +12,6 @@ Lexer::Lexer() {
 LexTokPair Lexer::getTokenLexemePair() {
 	char next_char;
 
-	// delete later
-	LexTokPair pair;
-
 	// open input file
 	inFile.open("input.txt");
 
@@ -22,9 +19,6 @@ LexTokPair Lexer::getTokenLexemePair() {
 	if (!inFile) {
 		cout << "File had trouble opening." << endl;
 	}
-
-	// testing the value
-	//cout << inFile.peek() << "gfgd" << endl; //=>53 ???
 
 	while (inFile) {
 		inFile.get(next_char);
@@ -50,11 +44,14 @@ LexTokPair Lexer::getTokenLexemePair() {
 
 			// while token is not found and it's not yet time to leave this machine
 			while (!token_found && !leave_machine) {
+				// read in next char from file
+				inFile.get(next_char);
+
 				switch (state) {
-					// states 2, 5 are acceptance states
+				// states 2, 5 are acceptance states
 				case 2:
 					// if next_char is a digit or period, token not found yet
-					if (isdigit(inFile.peek()) || inFile.peek() == '.') {
+					if (isdigit(inFile.peek()) || (inFile.peek() == '.')) {
 						break;
 					}
 					else {
@@ -87,12 +84,8 @@ LexTokPair Lexer::getTokenLexemePair() {
 					// get next state
 					state = DigitOrRealTable[state][col];
 
-					// read in next char from file
-					inFile.get(next_char);
-
-					// if next_char is !whitespace and !digit and !period, inFile.unget()
-					if (!isspace(next_char) && !isdigit(next_char) && (next_char != '.')) {
-						inFile.unget();
+					// if next char is !whitespace and !digit and !period
+					if (!isspace(inFile.peek()) && !isdigit(inFile.peek()) && (inFile.peek() != '.')) {
 						leave_machine = true;
 					}
 					break;
@@ -125,8 +118,6 @@ LexTokPair Lexer::getTokenLexemePair() {
 		// else if next_char is a known separator, go to that block
 		// else invalid char
 	}
-	// delete later
-	return pair;
 
 	// close file
 	inFile.close();
