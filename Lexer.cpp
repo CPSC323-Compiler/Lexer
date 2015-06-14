@@ -10,23 +10,12 @@ Lexer::Lexer() {
 }
 
 LexTokPair Lexer::getTokenLexemePair() {
-	// starting state: 1
-	// acceptance states: 2, 4
-	int IdentifierTable[5][2] = { { 2, 3 }, // row 1
-	{ 4, 5 }, // row 2
-	{ 3, 3 }, // row 3
-	{ 4, 5 }, // row 4
-	{ 4, 5 }, }; // row 5
-
-	int state = 1, // starting state: 1
-		col = 0, // initializing column to 0
-		state = 0; // initializing state to 0
 	char next_char;
-	bool token_found = false, // initializing token_found to false
-		leave_machine = false;
+
+	// delete later
 	LexTokPair pair;
 
-	// read from input file
+	// open input file
 	inFile.open("input.txt");
 
 	// error checking
@@ -34,31 +23,33 @@ LexTokPair Lexer::getTokenLexemePair() {
 		cout << "File had trouble opening." << endl;
 	}
 
+	// testing the value
+	//cout << inFile.peek() << "gfgd" << endl; //=>53 ???
+
 	while (inFile) {
+		inFile.get(next_char);
+
 		// if first char of token is a digit, go to digit/real dfsm
-		if (isdigit(inFile.peek())) {
+		if (isdigit(next_char)) {
+			int state = 1, // starting state: 1
+				col = 0; // initializing column to 0
+			bool token_found = false, // initializing token_found to false
+				leave_machine = false;
+			LexTokPair pair;
+
 			// starting state: 1
 			// acceptance states: 2, 5
 			int DigitOrRealTable[5][2] = { { 2, 3 }, // row 1
-			{ 2, 4 }, // row 2
-			{ 3, 3 }, // row 3
-			{ 5, 3 }, // row 4
-			{ 5, 3 }, }; // row 5
+											{ 2, 4 }, // row 2
+											{ 3, 3 }, // row 3
+											{ 5, 3 }, // row 4
+											{ 5, 3 }, }; // row 5
 
 			// set machine variable to digits/reals
 			machine = "dr";
 
 			// while token is not found and it's not yet time to leave this machine
 			while (!token_found && !leave_machine) {
-				// read in next char from file
-				inFile.get(next_char);
-
-				// if next_char is !whitespace and !digit and !period, inFile.unget()
-				if (!isspace(next_char) && !isdigit(next_char) && (next_char != '.')) {
-					inFile.unget();
-					leave_machine = true;
-				}
-
 				switch (state) {
 					// states 2, 5 are acceptance states
 				case 2:
@@ -95,26 +86,50 @@ LexTokPair Lexer::getTokenLexemePair() {
 					col = findLexemeColumn(next_char);
 					// get next state
 					state = DigitOrRealTable[state][col];
+
+					// read in next char from file
+					inFile.get(next_char);
+
+					// if next_char is !whitespace and !digit and !period, inFile.unget()
+					if (!isspace(next_char) && !isdigit(next_char) && (next_char != '.')) {
+						inFile.unget();
+						leave_machine = true;
+					}
 					break;
 				}
 			}
 		}
+		/*
+		// if first char of token is a letter, go to identifer dfsm
+		else if (isalpha(next_char)) {
+			int state = 1, // starting state: 1
+				col = 0; // initializing column to 0
+			char next_char;
+			bool token_found = false, // initializing token_found to false
+				leave_machine = false;
+			LexTokPair pair;
 
-		// deal with the following later after first machine works
-		// else if next_char is a letter, go to identifier dfsm
+			// starting state: 1
+			// acceptance states: 2, 4
+			int IdentifierTable[5][2] = { { 2, 3 }, // row 1
+											{ 4, 5 }, // row 2
+											{ 3, 3 }, // row 3
+											{ 4, 5 }, // row 4
+											{ 4, 5 }, }; // row 5
+
+			// delete later
+			return pair;
+		}*/
+
 		// else if next_char is a known operator, go to that block
 		// else if next_char is a known separator, go to that block
 		// else invalid char
 	}
+	// delete later
+	return pair;
 
 	// close file
 	inFile.close();
-
-	// delete this part later -- needed to build for now
-	LexTokPair pair;
-	pair.lexeme = "f";
-	pair.token = "f";
-	return pair;
 }
 
 int Lexer::findLexemeColumn(char some_char) {
@@ -135,13 +150,16 @@ int Lexer::findLexemeColumn(char some_char) {
 }
 
 bool Lexer::isSeparator(char) {
-
+	// delete later
+	return true;
 }
 
 bool Lexer::isOperator(char) {
-
+	// delete later
+	return true;
 }
 
 bool Lexer::isKeyword(string) {
-
+	// delete later
+	return true;
 }
