@@ -38,19 +38,19 @@ LexTokPair Lexer::getTokenLexemePair() {
 	}
 
 	// if next_char is a digit, go to digit/real dfsm
-		// while not in an acceptance state:
+		// loop around until next_char is !digit and !period
 			// read in next char from file
 			next_char = inFile.get;
+			// tack on next_char to lexeme variable
+			// if next_char is a period, then token is a real
 			// find column for next_char
 			// get next state
 
-			// notes:
-			// distinguish between digits and reals
-			// keep track of string for lexeme
-			// decide on token
-
-	// if state is accepting, token found
-	// else, token not found
+		// if next_char is !whitespace, put next_char back into input stream
+		// if state is accepting, token found (bool variable)
+			// if token is "", then token is digit
+			// return token-lexeme pair
+		// else, token not found
 
 	// deal with the following later after first machine works
 		// else if next_char is a letter, go to identifier dfsm
