@@ -13,10 +13,7 @@ struct LexTokPair {
 class Lexer {
 public:
 	Lexer();
-	// not sure what i'm going to do with this right now, or if its needed
-
-	char getNextChar();
-	// returns the next character in the file
+	// i'm keeping this here for now
 
 	LexTokPair getTokenLexemePair();
 	// if file input is valid, returns lexeme-token pair

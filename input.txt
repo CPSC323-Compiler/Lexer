@@ -1,6 +1,4 @@
-var2<-var2-1; //problem spot
-100-variable //problem spot
-x=5-4
-1 + 2 * 3 / 4 - 5;
-(v1 v2)
-( v1 v2 )
+5.6
+78
+.9
+10.
