@@ -12,8 +12,8 @@ struct LexTokPair {
 
 class Lexer {
 public:
-	Lexer(string);
-	// opens file to be read in
+	Lexer();
+	// not sure what i'm going to do with this right now, or if its needed
 
 	char getNextChar();
 	// returns the next character in the file
