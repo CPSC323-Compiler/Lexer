@@ -33,5 +33,5 @@ public:
 
 private:
 	ifstream inFile;
-	string machine; // digits/reals (dr) or identifiers (id) machine?
+	string machine = ""; // digits/reals (dr) or identifiers (id) machine?
 };
