@@ -10,7 +10,8 @@ Lexer::Lexer() {
 }
 
 LexTokPair Lexer::getTokenLexemePair() {
-	char next_char;
+	char next_char,
+		temp;
 
 	// open input file
 	inFile.open("input.txt");
@@ -22,6 +23,10 @@ LexTokPair Lexer::getTokenLexemePair() {
 
 	while (inFile) {
 		inFile.get(next_char);
+
+		while (isspace(next_char)) {
+			inFile.get(next_char);
+		}
 
 		// if first char of token is a digit, go to digit/real dfsm
 		if (isdigit(next_char)) {
@@ -44,36 +49,51 @@ LexTokPair Lexer::getTokenLexemePair() {
 
 			// while token is not found and it's not yet time to leave this machine
 			while (!token_found && !leave_machine) {
-				// read in next char from file
-				inFile.get(next_char);
-
 				switch (state) {
 				// states 2, 5 are acceptance states
-				case 2:
-					// if next_char is a digit or period, token not found yet
-					if (isdigit(inFile.peek()) || (inFile.peek() == '.')) {
-						break;
-					}
-					else {
-						pair.token = "integer";
+					// changed cases to 1, 4 instead of 2, 5 b/c of off-by-one error
+					// original states were numbered 1-5, not 0-4
+				case 1:
+					// if next char is a digit, token not found yet
+					temp = next_char;
+					inFile.get(next_char);
+					if (isdigit(next_char)) {
+						// read in next char from file, as long as it's a digit
+						while (isdigit(inFile.peek())) {
+							inFile.get(next_char);
+							// tack on next_char to lexeme variable
+							pair.lexeme += next_char;
+						}
+					} else {
+						inFile.unget();
+						next_char = temp;
 						// tack on next_char to lexeme variable
 						pair.lexeme += next_char;
-						token_found = true;
-						return pair;
 					}
+					pair.token = "integer";
+					token_found = true;
+					return pair;
 					break;
-				case 5:
-					// if next_char is a digit, token not found yet
-					if (isdigit(inFile.peek())) {
-						break;
-					}
-					else {
-						pair.token = "real";
+				case 4:
+					// if next char is a digit, token not found yet
+					temp = next_char;
+					inFile.get(next_char);
+					if (isdigit(next_char)) {
+						// read in next char from file, as long as it's a digit
+						while (isdigit(inFile.peek())) {
+							inFile.get(next_char);
+							// tack on next_char to lexeme variable
+							pair.lexeme += next_char;
+						}
+					} else {
+						inFile.unget();
+						next_char = temp;
 						// tack on next_char to lexeme variable
 						pair.lexeme += next_char;
-						token_found = true;
-						return pair;
 					}
+					pair.token = "real";
+					token_found = true;
+					return pair;
 					break;
 				default:
 					// tack on next_char to lexeme variable
@@ -83,12 +103,16 @@ LexTokPair Lexer::getTokenLexemePair() {
 					col = findLexemeColumn(next_char);
 					// get next state
 					state = DigitOrRealTable[state][col];
+					state--;
 
-					// if next char is !whitespace and !digit and !period
-					if (!isspace(inFile.peek()) && !isdigit(inFile.peek()) && (inFile.peek() != '.')) {
-						leave_machine = true;
-					}
+					// read in next char from file
+					inFile.get(next_char);
+
 					break;
+				}
+
+				if (!isspace(next_char) && !isdigit(next_char) && (next_char != '.')) {
+					leave_machine = true;
 				}
 			}
 		}

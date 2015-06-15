@@ -10,4 +10,8 @@ int main() {
 	cout << "Token" << " " << "Lexeme" << endl;
 	pair = l.getTokenLexemePair();
 	cout << pair.token << " " << pair.lexeme << endl;
+	pair = l.getTokenLexemePair();
+	cout << pair.token << " " << pair.lexeme << endl;
+	pair = l.getTokenLexemePair();
+	cout << pair.token << " " << pair.lexeme << endl;
 }
