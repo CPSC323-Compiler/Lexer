@@ -8,10 +8,8 @@ int main() {
 	Lexer l;
 
 	cout << "Token" << " " << "Lexeme" << endl;
-	pair = l.getTokenLexemePair();
-	cout << pair.token << " " << pair.lexeme << endl;
-	pair = l.getTokenLexemePair();
-	cout << pair.token << " " << pair.lexeme << endl;
-	pair = l.getTokenLexemePair();
-	cout << pair.token << " " << pair.lexeme << endl;
+	//while (!l.atEndOfFile()) {
+		pair = l.getTokenLexemePair();
+		cout << pair.token << " " << pair.lexeme << endl;
+	//}
 }

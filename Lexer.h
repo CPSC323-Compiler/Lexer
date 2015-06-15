@@ -13,7 +13,6 @@ struct LexTokPair {
 class Lexer {
 public:
 	Lexer();
-	// i'm keeping this here for now
 
 	LexTokPair getTokenLexemePair();
 	// if file input is valid, returns lexeme-token pair
@@ -30,6 +29,9 @@ public:
 
 	bool isKeyword(string);
 	// if the identifier string is a keyword, returns true
+
+	bool atEndOfFile();
+	// if at end of file, returns true
 
 private:
 	ifstream inFile;
