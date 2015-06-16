@@ -13,10 +13,10 @@ int main() {
 
 	Lexer l(filename);
 
-	cout << "Token" << " " << "Lexeme" << endl;
+	cout << "Token" << "\t" << "Lexeme" << endl;
 
 	while (!l.atEndOfFile()) {
 		pair = l.getTokenLexemePair();
-		cout << pair.token << " " << pair.lexeme << endl;
+		cout << pair.token << "\t" << pair.lexeme << endl;
 	}
 }

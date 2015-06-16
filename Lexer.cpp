@@ -24,19 +24,19 @@ LexTokPair Lexer::getTokenLexemePair() {
 
 	// if first char of token is a digit, go to digit/real dfsm
 	if (isdigit(next_char)) {
-		int state = 1, // starting state: 1
+		int state = 0, // starting state: 0
 			col = 0; // initializing column to 0
-		bool token_found = false, // initializing token_found to false
+		bool token_found = false,
 			leave_machine = false;
 		LexTokPair pair;
 
-		// starting state: 1
-		// acceptance states: 2, 5
-		int DigitOrRealTable[5][2] = { { 2, 3 }, // row 1
-										{ 2, 4 }, // row 2
-										{ 3, 3 }, // row 3
-										{ 5, 3 }, // row 4
-										{ 5, 3 }, }; // row 5
+		// starting state: 0
+		// acceptance states: 1, 4
+		int DigitOrRealTable[5][2] = { { 1, 2 }, // row 1
+										{ 1, 3 }, // row 2
+										{ 2, 2 }, // row 3
+										{ 4, 2 }, // row 4
+										{ 4, 2 }, }; // row 5
 
 		// set machine variable to digits/reals
 		machine = "dr";
@@ -44,8 +44,7 @@ LexTokPair Lexer::getTokenLexemePair() {
 		// while token is not found and it's not yet time to leave this machine
 		while (!token_found && !leave_machine) {
 			switch (state) {
-			// states 2, 5 are acceptance states
-				// changed cases to 1, 4 instead of 2, 5 b/c of off-by-one error
+			// states 1, 4 are acceptance states
 				// original states were numbered 1-5, not 0-4
 			case 1:
 				// tack on next_char to lexeme variable
