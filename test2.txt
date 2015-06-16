@@ -1,0 +1,7 @@
+m = k ;
+if ( louiseScore > geneScore ) {
+	if ( geneScore == x ) winner = gene ;
+}
+real s = 4.3;
+while ( j != s )
+	integer d = 3 ;

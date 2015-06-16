@@ -1,0 +1,4 @@
+m = k ;
+if ( louiseScore > geneScore ) {
+	if ( geneScore == x ) winner = gene ;
+}

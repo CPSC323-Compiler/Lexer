@@ -24,8 +24,8 @@ LexTokPair Lexer::getTokenLexemePair() {
 	}
 
 	// if first char of token is a 2-char operator
-	if ((next_char == '=' || next_char == '!' || next_char == '<'
-		|| next_char == '>') && inFile.peek() == '=') {
+	if (((next_char == '=' || next_char == '!' || next_char == '<'
+		|| next_char == '>') && inFile.peek() == '=')) {
 		LexTokPair pair;
 		pair.lexeme += next_char;
 		inFile.get(next_char);
@@ -39,6 +39,16 @@ LexTokPair Lexer::getTokenLexemePair() {
 		LexTokPair pair;
 		pair.lexeme += next_char;
 		pair.token = "operator";
+		return pair;
+	}
+
+	// if first char of token is a 2-char separator
+	else if ((next_char == '$') && (inFile.peek() == '$')) {
+		LexTokPair pair;
+		pair.lexeme += next_char;
+		inFile.get(next_char);
+		pair.lexeme += next_char;
+		pair.token = "separator";
 		return pair;
 	}
 	
@@ -133,6 +143,7 @@ LexTokPair Lexer::getTokenLexemePair() {
 			}
 		}
 	}
+
 	// if first char of token is a letter, go to identifer dfsm
 	else if (isalpha(next_char)) {
 		int state = 0, // starting state: 0
@@ -238,8 +249,7 @@ int Lexer::findLexemeColumn(char some_char) {
 		} else {
 			return 1;
 		}
-	}
-	else {
+	} else {
 		if (isalpha(some_char)) {
 			return 0;
 		} else {
