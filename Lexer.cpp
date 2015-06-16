@@ -23,8 +23,35 @@ LexTokPair Lexer::getTokenLexemePair() {
 		inFile.get(next_char);
 	}
 
+	// if first char of token is a 2-char operator
+	if ((next_char == '=' || next_char == '!' || next_char == '<'
+		|| next_char == '>') && inFile.peek() == '=') {
+		LexTokPair pair;
+		pair.lexeme += next_char;
+		inFile.get(next_char);
+		pair.lexeme += next_char;
+		pair.token = "operator";
+		return pair;
+	}
+
+	// if first char of token is a single-char operator
+	else if (isOperator(next_char)) {
+		LexTokPair pair;
+		pair.lexeme += next_char;
+		pair.token = "operator";
+		return pair;
+	}
+	
+	// if first char of token is a separator
+	else if (isSeparator(next_char)) {
+		LexTokPair pair;
+		pair.lexeme += next_char;
+		pair.token = "separator";
+		return pair;
+	}
+
 	// if first char of token is a digit, go to digit/real dfsm
-	if (isdigit(next_char)) {
+	else if (isdigit(next_char)) {
 		int state = 0, // starting state: 0
 			col = 0; // initializing column to 0
 		bool token_found = false,

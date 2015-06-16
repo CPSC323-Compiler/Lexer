@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <iomanip>
 #include "Lexer.h"
 
 using namespace std;
@@ -13,10 +14,10 @@ int main() {
 
 	Lexer l(filename);
 
-	cout << "Token" << "\t" << "Lexeme" << endl;
+	cout << "Token" << "\t\t\t" << "Lexeme" << endl;
 
 	while (!l.atEndOfFile()) {
 		pair = l.getTokenLexemePair();
-		cout << pair.token << "\t" << pair.lexeme << endl;
+		cout << pair.token << setw(18) << pair.lexeme << endl;
 	}
 }
