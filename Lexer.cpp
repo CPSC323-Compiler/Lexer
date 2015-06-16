@@ -132,16 +132,21 @@ LexTokPair Lexer::getTokenLexemePair() {
 			case 1:
 				// if not a single char identifier
 				if (isalpha(inFile.peek())) {
+					// tack on next_char to lexeme variable
+					pair.lexeme += next_char;
+					// get next char
 					inFile.get(next_char);
 					state = 3;
 					break;
 				}
 				else if (isdigit(inFile.peek())) {
-					state = 4;
+					state = 3;
 					break;
 				}
-				// tack on next_char to lexeme variable
-				pair.lexeme += next_char;
+				if (inFile.peek() != EOF) {
+					// tack on next_char to lexeme variable
+					pair.lexeme += next_char;
+				}
 				// if lexeme is a keyword
 				if (isKeyword(pair.lexeme)) {
 					pair.token = "keyword";
@@ -152,11 +157,12 @@ LexTokPair Lexer::getTokenLexemePair() {
 				return pair;
 				//break;
 			case 3:
+				// tack on next_char to lexeme variable
+				pair.lexeme += next_char;
 				if (inFile.peek() != EOF) {
-					// tack on next_char to lexeme variable
-					pair.lexeme += next_char;
 					// if next char is a letter or digit, token not found yet
 					while (isalpha(inFile.peek()) || isdigit(inFile.peek())) {
+						// get next char
 						inFile.get(next_char);
 						// tack on next_char to lexeme variable
 						pair.lexeme += next_char;
@@ -193,10 +199,6 @@ LexTokPair Lexer::getTokenLexemePair() {
 			}
 		}
 	}
-
-	// else if next_char is a known operator, go to that block
-	// else if next_char is a known separator, go to that block
-	// else invalid char
 
 	// close file
 	inFile.close();
