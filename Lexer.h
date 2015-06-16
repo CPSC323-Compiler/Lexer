@@ -12,8 +12,8 @@ struct LexTokPair {
 
 class Lexer {
 public:
-	Lexer(string file_name);
-	//
+	Lexer(string);
+	// constructor takes the name of an input file and attempts to open the file
 
 	LexTokPair getTokenLexemePair();
 	// if file input is valid, returns lexeme-token pair
