@@ -13,6 +13,7 @@ struct LexTokPair {
 class Lexer {
 public:
 	Lexer(string file_name);
+	//
 
 	LexTokPair getTokenLexemePair();
 	// if file input is valid, returns lexeme-token pair
