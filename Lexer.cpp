@@ -98,7 +98,6 @@ LexTokPair Lexer::getTokenLexemePair() {
 				col = findLexemeColumn(next_char);
 				// get next state
 				state = DigitOrRealTable[state][col];
-				state--;
 
 				// read in next char from file
 				inFile.get(next_char);
@@ -143,16 +142,16 @@ LexTokPair Lexer::getTokenLexemePair() {
 int Lexer::findLexemeColumn(char some_char) {
 	if (machine == "dr") {
 		if (isdigit(some_char)) {
-			return 1;
+			return 0;
 		} else {
-			return 2;
+			return 1;
 		}
 	}
 	else {
 		if (isalpha(some_char)) {
-			return 1;
+			return 0;
 		} else {
-			return 2;
+			return 1;
 		}
 	}
 }
