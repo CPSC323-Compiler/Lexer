@@ -7,7 +7,6 @@ while ( j != s )
 	integer d = 3 ;
 if ( p2p2p == j )
 	count = count + 1 ;
-endif
 $$
 read ( low , high )
 $$
