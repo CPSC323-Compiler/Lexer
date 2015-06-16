@@ -5,21 +5,16 @@
 
 using namespace std;
 
-Lexer::Lexer() {
+Lexer::Lexer(string file_name) {
+	inFile.open(file_name.c_str());
 
+	if (!inFile.is_open()){
+		cout << "Error: File won't open." << endl;
+	}
 }
 
 LexTokPair Lexer::getTokenLexemePair() {
-	// open input file
-	inFile.open("input.txt");
-
-	// error checking
-	if (!inFile) {
-		cout << "File had trouble opening." << endl;
-	}
-
-	char next_char,
-		temp;
+	char next_char;
 
 	inFile.get(next_char);
 
