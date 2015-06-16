@@ -18,6 +18,7 @@ LexTokPair Lexer::getTokenLexemePair() {
 
 	inFile.get(next_char);
 
+	// skip whitespace
 	while (isspace(next_char)) {
 		inFile.get(next_char);
 	}
@@ -47,22 +48,26 @@ LexTokPair Lexer::getTokenLexemePair() {
 			// states 1, 4 are acceptance states
 				// original states were numbered 1-5, not 0-4
 			case 1:
-				// tack on next_char to lexeme variable
-				pair.lexeme += next_char;
-				// if next char is a digit, token not found yet
-				if (isdigit(inFile.peek())) {
-					inFile.get(next_char);
+				// if char is . then need to go to state 4
+				if (next_char == '.') {
+					state = 4;
+					break;
+				}
+				if (inFile.peek() != EOF) {
 					// tack on next_char to lexeme variable
 					pair.lexeme += next_char;
-					// read in next char from file, as long as it's a digit
-					while (isdigit(inFile.peek())) {
+					// if next char is a digit, token not found yet
+					if (isdigit(inFile.peek())) {
 						inFile.get(next_char);
 						// tack on next_char to lexeme variable
 						pair.lexeme += next_char;
+						// read in next char from file, as long as it's a digit
+						while (isdigit(inFile.peek())) {
+							inFile.get(next_char);
+							// tack on next_char to lexeme variable
+							pair.lexeme += next_char;
+						}
 					}
-				} else {
-					// tack on next_char to lexeme variable
-					pair.lexeme += next_char;
 				}
 				pair.token = "integer";
 				token_found = true;
@@ -82,10 +87,10 @@ LexTokPair Lexer::getTokenLexemePair() {
 						// tack on next_char to lexeme variable
 						pair.lexeme += next_char;
 					}
-				} else {
+				} /*else {
 					// tack on next_char to lexeme variable
 					pair.lexeme += next_char;
-				}
+				}*/
 				pair.token = "real";
 				token_found = true;
 				return pair;
