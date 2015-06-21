@@ -61,10 +61,17 @@ LexTokPair Lexer::getTokenLexemePair() {
 		return pair;
 	}
 
-	// if first char of token is a period or an invalid/unknown char
-	else if (isInvalid(next_char) || next_char == '.') {
+	// if first char of token is an invalid/unknown char
+	else if ((next_char == '.')
+		|| (!isSeparator(next_char) && !isOperator(next_char) && !isalnum(next_char))) {
 		LexTokPair pair;
 		pair.lexeme += next_char;
+		if (next_char == '.' && isdigit(inFile.peek())) {
+			while (isdigit(inFile.peek())) {
+				inFile.get(next_char);
+				pair.lexeme += next_char;
+			}
+		}
 		pair.token = "invalid";
 		return pair;
 	}
@@ -122,14 +129,19 @@ LexTokPair Lexer::getTokenLexemePair() {
 				//break;
 			case 2: // only invalid lexemes transition to state 2
 				pair.lexeme += next_char;
+				while (isdigit(inFile.peek()) || (inFile.peek() == '.')) {
+					inFile.get(next_char);
+					pair.lexeme += next_char;
+				}
 				pair.token = "invalid";
 				return pair;
 				//break;
 			case 4:
-				// tack on next_char to lexeme variable
-				pair.lexeme += next_char;
 				// if next char is a digit, token not found yet
 				if (isdigit(inFile.peek())) {
+					// tack on next_char to lexeme variable
+					pair.lexeme += next_char;
+					// read in next char from file
 					inFile.get(next_char);
 					// tack on next_char to lexeme variable
 					pair.lexeme += next_char;
@@ -143,6 +155,11 @@ LexTokPair Lexer::getTokenLexemePair() {
 				// else lexeme is invalid/unknown
 				else {
 					state = 2;
+					break;
+				}
+				if (inFile.peek() == '.') {
+					state = 2;
+					inFile.get(next_char);
 					break;
 				}
 				pair.token = "real";
@@ -206,7 +223,7 @@ LexTokPair Lexer::getTokenLexemePair() {
 					state = 3;
 					break;
 				}
-				if (inFile.peek() != EOF) {
+				if (inFile.peek() != EOF && not_invalid) {
 					// tack on next_char to lexeme variable
 					pair.lexeme += next_char;
 				}
@@ -229,12 +246,21 @@ LexTokPair Lexer::getTokenLexemePair() {
 				pair.lexeme += next_char;
 				if (inFile.peek() != EOF && not_invalid) {
 					// if next char is a letter or digit, token not found yet
-					while (isalpha(inFile.peek()) || isdigit(inFile.peek())) {
+					while (isalnum(inFile.peek())) {
 						// get next char
 						inFile.get(next_char);
+						/*if (isdigit(next_char) && !isalnum(inFile.peek())) {
+							pair.lexeme += next_char;
+							pair.token = "invalid";
+							return pair;
+						}*/
 						// tack on next_char to lexeme variable
 						pair.lexeme += next_char;
 					}
+				}
+				if (isdigit(next_char)) {
+					pair.token = "invalid";
+					return pair;
 				}
 				// if lexeme is a keyword
 				if (isKeyword(pair.lexeme)) {
@@ -287,8 +313,8 @@ bool Lexer::isInvalid(char some_char) {
 	return (!
 		(isSeparator(some_char)
 		|| isOperator(some_char)
-		|| isalpha(some_char)
-		|| isdigit(some_char)
+		|| isalnum(some_char)
+		|| (some_char == '.')
 		));
 }
 
