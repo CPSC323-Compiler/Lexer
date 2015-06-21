@@ -26,6 +26,7 @@ int main() {
 		outFile << pair.token << setw(18) << pair.lexeme << endl;
 	}
 
-	// close file
-	outFile.close();
+	// close files
+	l.closeFile(); // input file
+	outFile.close(); // output file
 }

@@ -21,6 +21,9 @@ public:
 	int findLexemeColumn(char);
 	// depending on what the character is, this function returns the corresponding column of the 2D array
 
+	bool isInvalid(char);
+	// if character is not in the language, returns true
+
 	bool isSeparator(char);
 	// if character is a separator, returns true
 	// this function also checks if the character is a part of the separator "<-"
@@ -33,6 +36,9 @@ public:
 
 	bool atEndOfFile();
 	// if at end of file, returns true
+
+	void closeFile();
+	// close file at object level (so that main driver program has access to this feature)
 
 private:
 	ifstream inFile;

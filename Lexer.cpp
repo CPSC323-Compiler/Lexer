@@ -15,6 +15,7 @@ Lexer::Lexer(string file_name) {
 
 LexTokPair Lexer::getTokenLexemePair() {
 	char next_char;
+	bool not_invalid = false;
 
 	inFile.get(next_char);
 
@@ -60,6 +61,14 @@ LexTokPair Lexer::getTokenLexemePair() {
 		return pair;
 	}
 
+	// if first char of token is a period or an invalid/unknown char
+	else if (isInvalid(next_char) || next_char == '.') {
+		LexTokPair pair;
+		pair.lexeme += next_char;
+		pair.token = "invalid";
+		return pair;
+	}
+
 	// if first char of token is a digit, go to digit/real dfsm
 	else if (isdigit(next_char)) {
 		int state = 0, // starting state: 0
@@ -80,7 +89,7 @@ LexTokPair Lexer::getTokenLexemePair() {
 		machine = "dr";
 
 		// while token is not found and it's not yet time to leave this machine
-		while (!token_found && !leave_machine) {
+		while (!token_found) {
 			switch (state) {
 			// states 1, 4 are acceptance states
 				// original states were numbered 1-5, not 0-4
@@ -90,7 +99,8 @@ LexTokPair Lexer::getTokenLexemePair() {
 					state = 4;
 					break;
 				}
-				if (inFile.peek() != EOF) {
+				// if next char in stream is not EOF and next_char is valid
+				if ((inFile.peek() != EOF) && not_invalid) {
 					// tack on next_char to lexeme variable
 					pair.lexeme += next_char;
 					// if next char is a digit, token not found yet
@@ -100,8 +110,19 @@ LexTokPair Lexer::getTokenLexemePair() {
 						pair.lexeme += next_char;
 					}
 				}
+				// if next char in stream is a period, then go to state 4 for real numbers
+				if (inFile.peek() == '.') {
+					inFile.get(next_char);
+					state = 4;
+					break;
+				}
 				pair.token = "integer";
 				token_found = true;
+				return pair;
+				//break;
+			case 2: // only invalid lexemes transition to state 2
+				pair.lexeme += next_char;
+				pair.token = "invalid";
 				return pair;
 				//break;
 			case 4:
@@ -119,6 +140,11 @@ LexTokPair Lexer::getTokenLexemePair() {
 						pair.lexeme += next_char;
 					}
 				}
+				// else lexeme is invalid/unknown
+				else {
+					state = 2;
+					break;
+				}
 				pair.token = "real";
 				token_found = true;
 				return pair;
@@ -132,14 +158,13 @@ LexTokPair Lexer::getTokenLexemePair() {
 				// get next state
 				state = DigitOrRealTable[state][col];
 
-				// read in next char from file
-				inFile.get(next_char);
+				// if next char is a digit or period, read in next char from file
+				if (!isInvalid(inFile.peek()) && !isspace(inFile.peek()) && !isalpha(inFile.peek())
+					&& !isOperator(inFile.peek()) && !isSeparator(inFile.peek())) {
+					inFile.get(next_char);
+					not_invalid = true;
+				}
 				break;
-			}
-
-			// to handle cases where there is no whitespace between diff lexemes
-			if (!isspace(next_char) && !isdigit(next_char) && (next_char != '.')) {
-				leave_machine = true;
 			}
 		}
 	}
@@ -163,7 +188,7 @@ LexTokPair Lexer::getTokenLexemePair() {
 		machine = "id";
 
 		// while token is not found and it's not yet time to leave this machine
-		while (!token_found && !leave_machine) {
+		while (!token_found) {
 			switch (state) {
 				// states 1, 3 are acceptance states
 				// original states were numbered 1-5, not 0-4
@@ -194,10 +219,15 @@ LexTokPair Lexer::getTokenLexemePair() {
 				token_found = true;
 				return pair;
 				//break;
+			case 2: // only invalid lexemes transition to state 2
+				pair.lexeme += next_char;
+				pair.token = "invalid";
+				return pair;
+				//break;
 			case 3:
 				// tack on next_char to lexeme variable
 				pair.lexeme += next_char;
-				if (inFile.peek() != EOF) {
+				if (inFile.peek() != EOF && not_invalid) {
 					// if next char is a letter or digit, token not found yet
 					while (isalpha(inFile.peek()) || isdigit(inFile.peek())) {
 						// get next char
@@ -225,21 +255,16 @@ LexTokPair Lexer::getTokenLexemePair() {
 				// get next state
 				state = IdentifierTable[state][col];
 
-				// read in next char from file
-				inFile.get(next_char);
+				// if next char is a digit or letter, read in next char from file
+				if (!isInvalid(inFile.peek()) && !isspace(inFile.peek()) && (inFile.peek() != '.')
+					&& !isSeparator(inFile.peek()) && !isOperator(inFile.peek())) {
+					inFile.get(next_char);
+					not_invalid = true;
+				}
 				break;
-			}
-
-			// to handle cases where there is no whitespace between diff lexemes
-			// not sure how effective this is with digits/reals being placed right after an identifier
-			if (!isspace(next_char) && !isdigit(next_char) && (!isalpha(next_char))) {
-				leave_machine = true;
 			}
 		}
 	}
-
-	// close file
-	inFile.close();
 }
 
 int Lexer::findLexemeColumn(char some_char) {
@@ -258,6 +283,15 @@ int Lexer::findLexemeColumn(char some_char) {
 	}
 }
 
+bool Lexer::isInvalid(char some_char) {
+	return (!
+		(isSeparator(some_char)
+		|| isOperator(some_char)
+		|| isalpha(some_char)
+		|| isdigit(some_char)
+		));
+}
+
 bool Lexer::isSeparator(char c) {
 	return (
 		c == '('
@@ -266,7 +300,6 @@ bool Lexer::isSeparator(char c) {
 		|| c == ','
 		|| c == '{'
 		|| c == '}'
-		|| c == '$'
 	);
 }
 
@@ -307,4 +340,8 @@ bool Lexer::atEndOfFile() {
 	} else {
 		return false;
 	}
+}
+
+void Lexer::closeFile() {
+	inFile.close();
 }
